@@ -1,6 +1,6 @@
 package usecase
 
-import domain.data.Coupons
+import data.Coupons
 import domain.delivery.Delivery
 import domain.delivery.Package
 import domain.offer.OfferCriteria

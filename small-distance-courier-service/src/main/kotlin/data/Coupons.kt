@@ -1,4 +1,4 @@
-package domain.data
+package data
 
 import domain.offer.Offer
 
