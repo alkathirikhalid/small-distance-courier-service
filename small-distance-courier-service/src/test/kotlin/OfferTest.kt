@@ -1,7 +1,9 @@
+import domain.delivery.Delivery
 import domain.delivery.Package
 import org.junit.jupiter.api.Test
 import usecase.PackageOperationsUseCase
 import usecase.ValidationUseCase
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -37,8 +39,8 @@ class OfferTest {
         // Arrange
         val packageOperationsUseCase = PackageOperationsUseCase()
 
-        val isValidPackage = Package("PKG1", 50.0, 30.0, "OFR001")
-        val isInValidPackage = Package("PKG1", 200.0, 30.0, "OFR001")
+        val isValidPackage = Package("PKG1", 50.0, 30.0, "OFR001", 0.0)
+        val isInValidPackage = Package("PKG1", 200.0, 30.0, "OFR001", 0.0)
 
         // Act
         val isValid = packageOperationsUseCase.validatePackageOffer(isValidPackage)
@@ -47,5 +49,18 @@ class OfferTest {
         // Assert
         assertFalse(isValid, "Package should not be valid for the offer")
         assertTrue(isInValid, "Package should not be valid for the offer")
+    }
+
+    @Test
+    fun `If offer code is not valid or found, discounted amount will be equal to 0`() {
+        // Arrange
+        val packageOperationsUseCase = PackageOperationsUseCase()
+        val delivery = Delivery()
+        val item = Package("PKG1", 50.0, 30.0, "", 0.0)
+        delivery.packages.add(item)
+        // Act
+        val isValid = packageOperationsUseCase.getPackageOfferPercentage(delivery)
+        // Assert
+        assertEquals(0.0, isValid.packages[0].offer, "Offer percentage should be 0.0")
     }
 }
