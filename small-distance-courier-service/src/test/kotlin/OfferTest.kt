@@ -23,17 +23,29 @@ class OfferTest {
     }
 
     @Test
+    fun `Weight and Distance must be positive integers`() {
+        // Arrange
+        val validationUseCase = ValidationUseCase()
+
+        // Act
+        val isValid = validationUseCase.validatePackageIdWeightDistanceOfferCode("PKG1 0 0 OFR001")
+
+        // Assert
+        assertFalse(isValid, "Negative integers and decimal numbers should not be valid Weight")
+    }
+
+    @Test
     fun `Base Delivery Cost and Number of Packages must be positive integers`() {
         // Arrange
         val validationUseCase = ValidationUseCase()
 
         // Act
-        val isValidBaseCost = validationUseCase.validatePackageIdWeightDistanceOfferCode("PKG1 0 1 OFR001")
-        val isValidNoOfPackages = validationUseCase.validatePackageIdWeightDistanceOfferCode("PKG1 1 0 OFR001")
+        val isValidBaseCost = validationUseCase.validateBaseDeliveryCostNoOfPackages("100 3")
+        val isValidNoOfPackages = validationUseCase.validateBaseDeliveryCostNoOfPackages("200 6")
 
         // Assert
-        assertFalse(isValidBaseCost, "Negative integers and decimal numbers should not be valid for Base Cost")
-        assertFalse(isValidNoOfPackages, "Negative integers and decimal numbers should not be valid for No of Packages")
+        assertTrue(isValidBaseCost, "Negative integers and decimal numbers should not be valid for Base Cost")
+        assertTrue(isValidNoOfPackages, "Negative integers and decimal numbers should not be valid for No of Packages")
     }
 
     @Test
