@@ -2,6 +2,7 @@ package app
 
 import domain.delivery.Delivery
 import domain.util.InputSplitter
+import kotlin.system.exitProcess
 
 class CommandLineIO(private val application: Application, private val commandLineOutPut: CommandLineOutPut) {
     fun run() {
@@ -10,13 +11,14 @@ class CommandLineIO(private val application: Application, private val commandLin
             getBaseDeliveryCostAndNoOfPackages(readln().trim())
         } catch (exception: Exception) {
             commandLineOutPut.genericError(exception)
+            exitProcess(1)  // Exit the application with an error code
         }
     }
 
     private fun getBaseDeliveryCostAndNoOfPackages(input: String) {
         if (!application.validateBaseDeliveryCostNoOfPackages(input)) {
             commandLineOutPut.baseDeliveryAndPackagesError()
-            return
+            exitProcess(1)  // Exit the application with an error code
         }
         val parts = InputSplitter.splitInput(input, 2)
         val baseDeliveryCost = InputSplitter.getPartAtIndex(parts, 0)
@@ -34,24 +36,29 @@ class CommandLineIO(private val application: Application, private val commandLin
         val delivery = Delivery()
         delivery.baseCost = baseDeliver.toDouble()
 
-        fun getAndAddPackage(packageIdWeightDistanceAndOfferCode: String) {
+        fun getAndAddPackage(packageIdWeightDistanceAndOfferCode: String): Boolean {
             if (!application.validatePackageIdWeightDistanceOfferCode(packageIdWeightDistanceAndOfferCode)) {
                 commandLineOutPut.packageWeightDistanceAndOfferError()
-                return
+                return false
             }
             val parts = InputSplitter.splitInput(packageIdWeightDistanceAndOfferCode, 4)
             val item = getPackage(parts)
             delivery.packages.add(item)
+            return true
         }
 
         // Process the first package
         commandLineOutPut.packageWeightDistanceAndOffer()
-        getAndAddPackage(readln().trim())
+        if (!getAndAddPackage(readln().trim())) {
+            exitProcess(1)  // Exit the application with an error code
+        }
 
         // Process the remaining packages
         for (count in 2..noOfPackages.toInt()) {
             commandLineOutPut.packageCount(count)
-            getAndAddPackage(readln().trim())
+            if (!getAndAddPackage(readln().trim())) {
+                exitProcess(1)  // Exit the application with an error code
+            }
         }
 
         // Start Calculations
