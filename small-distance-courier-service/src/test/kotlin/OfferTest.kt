@@ -41,8 +41,8 @@ class OfferTest {
         // Arrange
         val packageOperationsUseCase = PackageOperationsUseCase()
 
-        val isValidPackage = Package("PKG1", 50.0, 30.0, "OFR001", 0.0)
-        val isInValidPackage = Package("PKG1", 200.0, 30.0, "OFR001", 0.0)
+        val isValidPackage = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0)
+        val isInValidPackage = Package("PKG1", 200.0, 30.0, "OFR001", 0.0, 0.0)
 
         // Act
         val isValid = packageOperationsUseCase.validatePackageOffer(isValidPackage)
@@ -58,10 +58,12 @@ class OfferTest {
         // Arrange
         val packageOperationsUseCase = PackageOperationsUseCase()
         val delivery = Delivery()
-        val item = Package("PKG1", 50.0, 30.0, "", 0.0)
+        val item = Package("PKG1", 50.0, 30.0, "", 0.0, 0.0)
         delivery.packages.add(item)
+
         // Act
         val isValid = packageOperationsUseCase.getPackageOfferPercentage(delivery)
+
         // Assert
         assertEquals(0.0, isValid.packages[0].offer, "Offer percentage should be 0.0")
     }
@@ -70,11 +72,14 @@ class OfferTest {
     fun `Code should be extensible and scalable for more offer codes`() {
         // Assert Existing
         assertEquals(3, Coupons.offers.size, "Total Old offers should be 3")
+
         // Arrange
         val newCouponCodes = Coupons.offers
+
         // Act
         val offer = Offer("OFR004", 1.0, 20.0..150.0, 10.0..60.0)
         newCouponCodes.add(offer)
+
         // Assert
         assertEquals(4, Coupons.offers.size, "Total New offers should be 4")
     }
