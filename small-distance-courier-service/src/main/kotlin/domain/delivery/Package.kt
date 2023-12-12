@@ -7,5 +7,6 @@ data class Package(
     val offerCode: String,
     var offer: Double,
     var deliveryCost: Double,
-    var discount: Double
+    var discount: Double,
+    var totalCost: Double,
 )
