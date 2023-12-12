@@ -1,5 +1,7 @@
+import domain.data.Coupons
 import domain.delivery.Delivery
 import domain.delivery.Package
+import domain.offer.Offer
 import org.junit.jupiter.api.Test
 import usecase.PackageOperationsUseCase
 import usecase.ValidationUseCase
@@ -62,5 +64,18 @@ class OfferTest {
         val isValid = packageOperationsUseCase.getPackageOfferPercentage(delivery)
         // Assert
         assertEquals(0.0, isValid.packages[0].offer, "Offer percentage should be 0.0")
+    }
+
+    @Test
+    fun `Code should be extensible and scalable for more offer codes`() {
+        // Assert Existing
+        assertEquals(3, Coupons.offers.size, "Total Old offers should be 3")
+        // Arrange
+        val newCouponCodes = Coupons.offers
+        // Act
+        val offer = Offer("OFR004", 1.0, 20.0..150.0, 10.0..60.0)
+        newCouponCodes.add(offer)
+        // Assert
+        assertEquals(4, Coupons.offers.size, "Total New offers should be 4")
     }
 }
