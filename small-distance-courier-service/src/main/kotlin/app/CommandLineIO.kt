@@ -1,12 +1,14 @@
 package app
 
 import domain.delivery.Delivery
+import domain.transportation.Vehicle
 import domain.util.InputSplitter
 import kotlin.system.exitProcess
 
 class CommandLineIO(private val application: Application, private val commandLineOutPut: CommandLineOutPut) {
     fun run() {
         try {
+            commandLineOutPut.appLaunch()
             commandLineOutPut.baseDeliveryAndPackages()
             getBaseDeliveryCostAndNoOfPackages(readln().trim())
         } catch (exception: Exception) {
@@ -65,6 +67,23 @@ class CommandLineIO(private val application: Application, private val commandLin
                 exitProcess(1)  // Exit the application with an error code
             }
         }
+        commandLineOutPut.vehicleSpeedAndWeight()
+        getNumberOfVehiclesSpeedAndWeight(readln().trim(), delivery)
+    }
+
+    private fun getNumberOfVehiclesSpeedAndWeight(input: String, delivery: Delivery) {
+        if (!application.validateNoOfVehiclesMaxSpeedMaxWeight(input)) {
+            commandLineOutPut.vehicleSpeedAndWeightError()
+            exitProcess(1)  // Exit the application with an error code
+        }
+        val parts3 = InputSplitter.splitInput(input, 3)
+        for (count in 1..InputSplitter.getPartAtIndex(parts3, 0).toInt()) {
+            val vehicle = Vehicle(
+                InputSplitter.getPartAtIndex(parts3, 1).toDouble(),
+                InputSplitter.getPartAtIndex(parts3, 2).toDouble()
+            )
+            delivery.vehicles.add(vehicle)
+        }
 
         // Start Calculations
         application.performCalculations(delivery)
@@ -77,7 +96,7 @@ class CommandLineIO(private val application: Application, private val commandLin
             InputSplitter.getPartAtIndex(parts, 0),
             InputSplitter.getPartAtIndex(parts, 1).toDouble(),
             InputSplitter.getPartAtIndex(parts, 2).toDouble(),
-            InputSplitter.getPartAtIndex(parts, 3), 0.0, 0.0, 0.0, 0.0
+            InputSplitter.getPartAtIndex(parts, 3), 0.0, 0.0, 0.0, 0.0, 0.0
         )
     }
 }

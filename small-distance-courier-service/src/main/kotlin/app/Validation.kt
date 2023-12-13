@@ -6,9 +6,17 @@ package app
  * It contains three regular expressions:
  * - [baseDeliveryCost_noOfPackages]: Validates the format for base delivery cost and the number of packages.
  * - [packageId_weight_distance_offerCode]: Validates the format for package details including ID, weight, distance, and optional offer code.
+ * - [noOfVehicles_maxSpeed_maxWeight]: Validates the format for the number of vehicles, max speed, and max weight.
  */
 class Validation {
     companion object {
+        /**
+         * Validates the format for base delivery cost and the number of packages.
+         * The format should be: "baseDeliveryCost noOfPackages" where both values must be positive integers.
+         */
+        val baseDeliveryCost_noOfPackages =
+            Regex("""^([1-9]\d*)\s+([1-9]\d*)${'$'}""")
+
         /**
          * Validates the format for package details including ID, weight, distance, and optional offer code.
          * - ID: Should start with "PKG" followed by a number.
@@ -20,10 +28,10 @@ class Validation {
             Regex("""^(PKG\d+)\s+([1-9]\d*)\s+([1-9]\d*)(?:\s+(\w+))?${'$'}""")
 
         /**
-         * Validates the format for base delivery cost and the number of packages.
-         * The format should be: "baseDeliveryCost noOfPackages" where both values must be positive integers.
+         * Validates the format for the number of vehicles, max speed, and max weight.
+         * All values must be positive integers.
          */
-        val baseDeliveryCost_noOfPackages =
-            Regex("""^([1-9]\d*)\s+([1-9]\d*)${'$'}""")
+        val noOfVehicles_maxSpeed_maxWeight =
+            Regex("""^([1-9]\d*)\s+([1-9]\d*)\s+([1-9]\d*)${'$'}""")
     }
 }
