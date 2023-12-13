@@ -24,37 +24,37 @@ Part 1 : Estimate the total delivery cost of each package with an offer code (If
 - [x] All input numbers will be whole numbers (Base Delivery Cost, Number of Packages, Package Weight in Kg, Distance in Km).
 
 Part 2: Calculate the estimated delivery time for every package by maximizing no. of packages in every shipment.
-- [ ] Each Vehicle has a limit (L) on maximum weight (kg) that it can carry.
-- [ ] All Vehicles travel at the same speed (S km/hr) and in the same route.
-- [ ] Delivery should meet the required mentioned delivery criteria:
+- [x] Each Vehicle has a limit (L) on maximum weight (kg) that it can carry.
+- [x] All Vehicles travel at the same speed (S km/hr) and in the same route.
+- [x] Delivery should meet the required mentioned delivery criteria:
 - Shipment should contain max packages vehicle can carry in a trip. (Optimum Combination nearing vehicle max weight limit but not exceeding it).
 - We should prefer heavier packages when there are multiple shipments with the same no. of packages.
 - If the weights are also the same, preference should be given to the shipment which can be delivered first. (Shortest Distance)
-- [ ] Always travelling at max speed.
-- [ ] Post package delivery, vehicle will return back to the source station with the same speed and will be available for another shipment.
-- [ ] All input numbers will be whole numbers (Number of Vehicles, Max Speed, Max Weight).
-- [ ] Round Of estimated delivery time up to 2 digits. (for example 3.456 becomes 3.45) (Truncate).
+- [x] Always travelling at max speed.
+- [x] Post package delivery, vehicle will return back to the source station with the same speed and will be available for another shipment.
+- [x] All input numbers will be whole numbers (Number of Vehicles, Max Speed, Max Weight).
+- [x] Round Of estimated delivery time up to 2 digits. (for example 3.456 becomes 3.45) (Truncate).
 
 ### Additional Acceptance Criteria
 - [x] Expansion : If offer code is not valid/found, discounted amount will be equal to 0 (Application: Invalid / Can not be found). OR Discount will not be provided if no offer code is applied (User : Did not provide).
-- [ ] Expansion : Round Of estimated delivery time up to 2 digits. (for example 3.456 becomes 3.45) (Truncate). Truncate all digital Output to be consistent with the requirement.
+- [x] Expansion : Round Of estimated delivery time up to 2 digits. (for example 3.456 becomes 3.45) (Truncate). Truncate all digital Output to be consistent with the requirement.
 
 # Use Case
 Actor : User
 - [x] Input Base Delivery Cost, Number of Packages
 - [x] Input Package ID, Package Weight in Kg, Distance in Km, Offer Code (If applicable)
-- [ ] Input No. of Vehicles, Max speed, Max (L) Weight 
+- [x] Input No. of Vehicles, Max speed, Max (L) Weight 
 
 Actor : Application
 - [x] Output directives
 - [x] Validate Input Base Delivery Cost, Number of Packages
 - [x] Validate Input Package ID, Package Weight in Kg, Distance in Km, Offer Code (If applicable)
-- [ ] Validate Input No. of Vehicles, Max speed, Max (L) Weight
+- [x] Validate Input No. of Vehicles, Max speed, Max (L) Weight
 - [x] Output Error (If applicable)
 - [x] Validate Offer Criteria
 - [x] Estimate the total delivery cost of each package with an offer code (If applicable).
-- [ ] Validate Deliver Criteria
-- [ ] Calculate the estimated delivery time for every package by maximizing no. of packages in every shipment.
+- [x] Validate Deliver Criteria
+- [x] Calculate the estimated delivery time for every package by maximizing no. of packages in every shipment.
 
 # Edge Cases
 - [x] User input leading or/and trailing whitespace/s.
