@@ -202,6 +202,51 @@ class DeliveryTest {
         assertEquals("PKG2", packages[1].id, "Expected PKG is incorrect")
     }
 
+    @Test
+    fun `If package weights are the same, preference should be given to the package which can be delivered first`() {
+        // Arrange
+        val deliveryCriteria = DeliveryCriteria()
+        val delivery = deliveryWithSameWeightInput()
+
+        // Act
+        val packages = deliveryCriteria.findOptimalPackageCombination(delivery.vehicles[1].maxWeight, delivery.packages)
+
+        // Assert
+        assertEquals("PKG1", packages[0].id, "Expected PKG is incorrect")
+        assertEquals("PKG3", packages[1].id, "Expected PKG is incorrect")
+        assertEquals("PKG4", packages[1].id, "Expected PKG is incorrect")
+        assertEquals("PKG5", packages[1].id, "Expected PKG is incorrect")
+    }
+
+    private fun deliveryWithSameWeightInput(): Delivery {
+        // Provided Test Data
+        val delivery = Delivery()
+        delivery.baseCost = 100.00
+
+        val packages: ArrayList<Package> = ArrayList()
+
+        val pkg1 = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0)
+        val pkg2 = Package("PKG2", 50.0, 125.0, "OFR008", 0.0, 0.0, 0.0, 0.0)
+        val pkg3 = Package("PKG3", 50.0, 60.0, "OFR003", 0.0, 0.0, 0.0, 0.0)
+        val pkg4 = Package("PKG4", 50.0, 95.0, "OFR002", 0.0, 0.0, 0.0, 0.0)
+        val pkg5 = Package("PKG5", 50.0, 100.0, "NA", 0.0, 0.0, 0.0, 0.0)
+
+        packages.add(pkg1)
+        packages.add(pkg2)
+        packages.add(pkg3)
+        packages.add(pkg4)
+        packages.add(pkg5)
+
+        val vehicle1 = Vehicle(70.0, 200.0)
+        val vehicle2 = Vehicle(70.0, 200.0)
+
+        delivery.vehicles.add(vehicle1)
+        delivery.vehicles.add(vehicle2)
+        delivery.packages = packages
+
+        return delivery
+    }
+
     private fun deliveryWithFivePackagesInput(): Delivery {
         // Provided Test Data
         val delivery = Delivery()
