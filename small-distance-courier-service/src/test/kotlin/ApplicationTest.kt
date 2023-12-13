@@ -36,8 +36,8 @@ class ApplicationTest {
             appendLine("Please input the package Id, Weight in Kg, Distance in Km and Offer Code:")
             appendLine("Package 2:")
             appendLine("Package 3:")
-            appendLine("PKG1 0 175 ")
-            appendLine("PKG2 0 275 ")
+            appendLine("PKG1 0 175")
+            appendLine("PKG2 0 275")
             appendLine("PKG3 35 665")
         }
 

@@ -12,7 +12,7 @@
 # Acceptance Criteria
 Part 1 : Estimate the total delivery cost of each package with an offer code (If applicable).
 - [x] Only one offer code can be applied for any given package.
-- [x] Package should meet the required mentioned offer criteria.
+- [x] Package should meet the required mentioned offer criteria:
 - OFR001 10% Discount, Distance < 200 Km, Weight 70-200 KG.
 - OFR002 7% Discount, Distance 50-150 Km, Weight 100-250 KG.
 - OFR003 5% Discount, Distance 50-250 Km, Weight 10-150 KG.
@@ -26,7 +26,7 @@ Part 1 : Estimate the total delivery cost of each package with an offer code (If
 Part 2: Calculate the estimated delivery time for every package by maximizing no. of packages in every shipment.
 - [ ] Each Vehicle has a limit (L) on maximum weight (kg) that it can carry.
 - [ ] All Vehicles travel at the same speed (S km/hr) and in the same route.
-- [ ] Delivery should meet the required mentioned delivery criteria.
+- [ ] Delivery should meet the required mentioned delivery criteria:
 - Shipment should contain max packages vehicle can carry in a trip. (Optimum Combination nearing vehicle max weight limit but not exceeding it).
 - We should prefer heavier packages when there are multiple shipments with the same no. of packages.
 - If the weights are also the same, preference should be given to the shipment which can be delivered first. (Shortest Distance)
@@ -55,3 +55,12 @@ Actor : Application
 - [x] Estimate the total delivery cost of each package with an offer code (If applicable).
 - [ ] Validate Deliver Criteria
 - [ ] Calculate the estimated delivery time for every package by maximizing no. of packages in every shipment.
+
+# Edge Cases
+- [x] User input leading or/and trailing whitespace/s.
+- [x] User input duplicate packages identified by package ID.
+
+# Assumptions
+- [x] No use of threading given it's a Small Distance Courier Service for I/O.
+- [x] Since the loading is sequential by direct input one line at a time, it is not expected for a user to input hundreds of lines.
+- [x] No use of set, to keep the packages in order, Sets have no inherent order, while ArrayLists maintain the order of elements, Adding elements to a set may not preserve the insertion order. ArrayLists provide constant time access to elements using their index, while accessing elements in a set is typically done through iteration.

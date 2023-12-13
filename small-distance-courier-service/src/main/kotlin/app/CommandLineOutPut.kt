@@ -23,7 +23,7 @@ class CommandLineOutPut {
     }
 
     private fun line() {
-        println(" ")
+        println("")
     }
 
     fun printResults(delivery: Delivery) {
@@ -51,6 +51,12 @@ class CommandLineOutPut {
             "The required format for Package ID say PKG1, Package Weight in Kg say 5, Distance in Km say 5 " +
                     "and offer Code say OFR001, would be: \n" +
                     "PKG1 5 5 OFR001"
+        )
+    }
+
+    fun packageExistsError() {
+        println(
+            "Package Id Exists, packages require to be unique."
         )
     }
 

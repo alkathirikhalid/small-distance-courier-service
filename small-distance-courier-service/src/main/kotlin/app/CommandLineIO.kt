@@ -43,6 +43,11 @@ class CommandLineIO(private val application: Application, private val commandLin
             }
             val parts = InputSplitter.splitInput(packageIdWeightDistanceAndOfferCode, 4)
             val item = getPackage(parts)
+            val existingPackage = delivery.packages.find { it.id == item.id }
+            if (existingPackage != null) {
+                commandLineOutPut.packageExistsError()
+                return false
+            }
             delivery.packages.add(item)
             return true
         }
