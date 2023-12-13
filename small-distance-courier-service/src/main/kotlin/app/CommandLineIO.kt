@@ -18,18 +18,23 @@ class CommandLineIO(private val application: Application, private val commandLin
     }
 
     private fun getBaseDeliveryCostAndNoOfPackages(input: String) {
-        if (!application.validateBaseDeliveryCostNoOfPackages(input)) {
+        var userInput = input
+        var validInput = application.validateBaseDeliveryCostNoOfPackages(userInput)
+        while (!validInput) {
             commandLineOutPut.baseDeliveryAndPackagesError()
-            exitProcess(1)  // Exit the application with an error code
+            commandLineOutPut.baseDeliveryAndPackages()
+            // Keep prompting until valid input is received
+            userInput = readln().trim()
+            validInput = application.validateBaseDeliveryCostNoOfPackages(userInput)
         }
-        val parts = InputSplitter.splitInput(input, 2)
+
+        val parts = InputSplitter.splitInput(userInput, 2)
         val baseDeliveryCost = InputSplitter.getPartAtIndex(parts, 0)
         val noOfPackages = InputSplitter.getPartAtIndex(parts, 1)
 
         getPackageIdWeightDistanceAndOfferCode(baseDeliveryCost, noOfPackages)
     }
 
-    // Usage
     private fun getPackageIdWeightDistanceAndOfferCode(baseDeliver: String, noOfPackages: String) {
         processPackageInput(baseDeliver, noOfPackages)
     }
@@ -39,11 +44,17 @@ class CommandLineIO(private val application: Application, private val commandLin
         delivery.baseCost = baseDeliver.toDouble()
 
         fun getAndAddPackage(packageIdWeightDistanceAndOfferCode: String): Boolean {
-            if (!application.validatePackageIdWeightDistanceOfferCode(packageIdWeightDistanceAndOfferCode)) {
+            var userInput = packageIdWeightDistanceAndOfferCode
+            var validInput = application.validatePackageIdWeightDistanceOfferCode(userInput)
+            while (!validInput) {
                 commandLineOutPut.packageWeightDistanceAndOfferError()
-                return false
+                commandLineOutPut.packageWeightDistanceAndOffer()
+                // Keep prompting until valid input is received
+                userInput = readln().trim()
+                validInput = application.validatePackageIdWeightDistanceOfferCode(userInput)
             }
-            val parts = InputSplitter.splitInput(packageIdWeightDistanceAndOfferCode, 4)
+
+            val parts = InputSplitter.splitInput(userInput, 4)
             val item = getPackage(parts)
             val existingPackage = delivery.packages.find { it.id == item.id }
             if (existingPackage != null) {
@@ -72,11 +83,17 @@ class CommandLineIO(private val application: Application, private val commandLin
     }
 
     private fun getNumberOfVehiclesSpeedAndWeight(input: String, delivery: Delivery) {
-        if (!application.validateNoOfVehiclesMaxSpeedMaxWeight(input)) {
+        var userInput = input
+        var validInput = application.validateNoOfVehiclesMaxSpeedMaxWeight(userInput)
+        while (!validInput) {
             commandLineOutPut.vehicleSpeedAndWeightError()
-            exitProcess(1)  // Exit the application with an error code
+            commandLineOutPut.vehicleSpeedAndWeight()
+            // Keep prompting until valid input is received
+            userInput = readln().trim()
+            validInput = application.validateNoOfVehiclesMaxSpeedMaxWeight(userInput)
         }
-        val parts3 = InputSplitter.splitInput(input, 3)
+
+        val parts3 = InputSplitter.splitInput(userInput, 3)
         for (count in 1..InputSplitter.getPartAtIndex(parts3, 0).toInt()) {
             val vehicle = Vehicle(
                 InputSplitter.getPartAtIndex(parts3, 1).toDouble(),

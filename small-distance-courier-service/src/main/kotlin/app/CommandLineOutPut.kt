@@ -47,17 +47,19 @@ class CommandLineOutPut {
     }
 
     fun printResults(delivery: Delivery) {
+        println("| PKG  | Discount | Total Cost | Delivery Time")
+        println("|------|----------|------------|--------------")
         for (item in delivery.packages) {
-            print(item.id)
+            print("| " + item.id)
             space()
 
-            print(singleFormat.format(item.discount))
+            print("| " + singleFormat.format(item.discount))
             space()
 
-            print(singleFormat.format(item.totalCost))
+            print("       | " + singleFormat.format(item.totalCost))
             space()
 
-            print(dualFormat.format(item.estimatedDeliveryTime))
+            print("       | " + dualFormat.format(item.estimatedDeliveryTime))
             line()
         }
     }

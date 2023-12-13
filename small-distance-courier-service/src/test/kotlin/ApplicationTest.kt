@@ -47,11 +47,13 @@ class ApplicationTest {
             appendLine("Package 4:")
             appendLine("Package 5:")
             appendLine("Please input No. of Vehicles, Max speed, and max weight:")
-            appendLine("PKG1 0 750 3.98")
-            appendLine("PKG2 0 1475 1.78")
-            appendLine("PKG3 0 2350 1.42")
-            appendLine("PKG4 105 1395 0.85")
-            appendLine("PKG5 0 2125 4.19")
+            appendLine("| PKG  | Discount | Total Cost | Delivery Time")
+            appendLine("|------|----------|------------|--------------")
+            appendLine("| PKG1 | 0        | 750        | 3.98")
+            appendLine("| PKG2 | 0        | 1475        | 1.78")
+            appendLine("| PKG3 | 0        | 2350        | 1.42")
+            appendLine("| PKG4 | 105        | 1395        | 0.85")
+            appendLine("| PKG5 | 0        | 2125        | 4.19")
         }
 
         assertEquals(expectedOutput.trim(), outputCapture.toString().trim())
