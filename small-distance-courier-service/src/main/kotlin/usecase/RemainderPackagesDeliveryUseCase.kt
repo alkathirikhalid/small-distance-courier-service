@@ -39,7 +39,7 @@ class RemainderPackageDeliveryTimeUseCase {
                     matchingPackage?.estimatedDeliveryTime?.plus(vehicle.availableTime) ?: 0.0
             }
             // Remove the loaded packages from the original list to be used in the next vehicle
-            UndeliveredPackages.undeliveredPackages.removeAll(vehicle.packagesToDeliver)
+            UndeliveredPackages.undeliveredPackages.removeAll(vehicle.packagesToDeliver.toSet())
         }
     }
 }

@@ -48,7 +48,7 @@ class DeliveryTimeUseCase {
             val undelivered = ArrayList(currentUndeliveredPackages)
             vehicle.packagesToDeliver = deliveryCriteria.findOptimalPackageCombination(vehicle.maxWeight, undelivered)
             // Remove the loaded packages from the original list to be used in the next vehicle
-            currentUndeliveredPackages.removeAll(vehicle.packagesToDeliver)
+            currentUndeliveredPackages.removeAll(vehicle.packagesToDeliver.toSet())
         }
         UndeliveredPackages.undeliveredPackages.clear()
         UndeliveredPackages.undeliveredPackages.addAll(currentUndeliveredPackages)
