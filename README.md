@@ -1,7 +1,7 @@
 # small-distance-courier-service
 ## Small Distance Courier Service
 
-![small-distance-courier-service](https://github.com/alkathirikhalid/small-distance-courier-service/assets/929343/81a7a90e-bf80-476f-991a-1b75d24c9db5)
+![small-distance-courier-service-lite](https://github.com/alkathirikhalid/small-distance-courier-service/assets/929343/30fd7f94-f282-478c-83cb-950c0e2dcf20)
 
 ## Approach
 - The SOLID design principles
