@@ -214,8 +214,8 @@ class DeliveryTest {
         // Assert
         assertEquals("PKG1", packages[0].id, "Expected PKG is incorrect")
         assertEquals("PKG3", packages[1].id, "Expected PKG is incorrect")
-        assertEquals("PKG4", packages[1].id, "Expected PKG is incorrect")
-        assertEquals("PKG5", packages[1].id, "Expected PKG is incorrect")
+        assertEquals("PKG4", packages[2].id, "Expected PKG is incorrect")
+        assertEquals("PKG5", packages[3].id, "Expected PKG is incorrect")
     }
 
     private fun deliveryWithSameWeightInput(): Delivery {
