@@ -2,7 +2,9 @@ import domain.cost.Discount
 import domain.cost.TotalCost
 import domain.delivery.Delivery
 import domain.delivery.DeliveryCost
+import domain.delivery.DeliveryCriteria
 import domain.delivery.Package
+import domain.transportation.Vehicle
 import org.junit.jupiter.api.Test
 import usecase.CostDiscountUseCase
 import kotlin.test.assertEquals
@@ -166,5 +168,66 @@ class DeliveryTest {
 
         // Assert
         assertEquals(80.0, totalCost, "Total cost calculation is incorrect")
+    }
+
+    @Test
+    fun `Each Vehicle has a limit (L) on maximum weight (kg) that it can carry`() {
+        // Arrange & Act
+        val vehicle = Vehicle(70.0, 200.0)
+
+        // Assert
+        assertEquals(200.0, vehicle.maxWeight, "Total vehicle max weight is incorrect")
+    }
+
+    @Test
+    fun `All Vehicles travel at the same speed and in the same route`() {
+        // Arrange & Act
+        val vehicle = Vehicle(70.0, 200.0)
+
+        // Assert
+        assertEquals(70.0, vehicle.maxSpeed, "Total vehicle max speed is incorrect")
+    }
+
+    @Test
+    fun `Shipment should contain max packages vehicle can carry in a trip - prefer heavier`() {
+        // Arrange
+        val deliveryCriteria = DeliveryCriteria()
+        val delivery = deliveryWithFivePackagesInput()
+
+        // Act
+        val packages = deliveryCriteria.findOptimalPackageCombination(delivery.vehicles[1].maxWeight, delivery.packages)
+
+        // Assert
+        assertEquals("PKG4", packages[0].id, "Expected PKG is incorrect")
+        assertEquals("PKG2", packages[1].id, "Expected PKG is incorrect")
+    }
+
+    private fun deliveryWithFivePackagesInput(): Delivery {
+        // Provided Test Data
+        val delivery = Delivery()
+        delivery.baseCost = 100.00
+
+        val packages: ArrayList<Package> = ArrayList()
+
+        val pkg1 = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0)
+        val pkg2 = Package("PKG2", 75.0, 125.0, "OFR008", 0.0, 0.0, 0.0, 0.0)
+        val pkg3 = Package("PKG3", 175.0, 60.0, "OFR003", 0.0, 0.0, 0.0, 0.0)
+        val pkg4 = Package("PKG4", 110.0, 95.0, "OFR002", 0.0, 0.0, 0.0, 0.0)
+        val pkg5 = Package("PKG5", 155.0, 100.0, "NA", 0.0, 0.0, 0.0, 0.0)
+
+        packages.add(pkg1)
+        packages.add(pkg2)
+        packages.add(pkg3)
+        packages.add(pkg4)
+        packages.add(pkg5)
+
+        val vehicle1 = Vehicle(70.0, 200.0)
+        val vehicle2 = Vehicle(70.0, 200.0)
+
+        delivery.vehicles.add(vehicle1)
+        delivery.vehicles.add(vehicle2)
+        delivery.packages = packages
+
+        return delivery
     }
 }

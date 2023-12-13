@@ -1,5 +1,7 @@
 package domain.delivery
 
+import domain.transportation.Vehicle
+
 /**
  * The `Delivery` class represents a delivery or shipment containing a base cost and a list of packages.
  *
@@ -11,5 +13,6 @@ package domain.delivery
  */
 data class Delivery(
     var baseCost: Double = 0.0,
-    var packages: ArrayList<Package> = ArrayList()
+    var packages: ArrayList<Package> = ArrayList(),
+    var vehicles: ArrayList<Vehicle> = ArrayList()
 )
