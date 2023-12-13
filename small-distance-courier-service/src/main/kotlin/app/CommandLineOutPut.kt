@@ -3,10 +3,19 @@ package app
 import domain.delivery.Delivery
 import java.text.DecimalFormat
 
+/**
+ * The CommandLineOutPut class provides methods for displaying output messages and results in the command line interface.
+ *
+ * @property singleFormat A decimal format for formatting single-digit numbers.
+ * @property dualFormat A decimal format for formatting numbers with two decimal places.
+ */
 class CommandLineOutPut {
     private val singleFormat = DecimalFormat("#0")
     private val dualFormat = DecimalFormat("#0.00")
 
+    /**
+     * Displays a welcome message for the courier service application.
+     */
     fun appLaunch() {
         // ANSI escape codes for color
         val reset = "\u001B[0m"
@@ -30,8 +39,8 @@ class CommandLineOutPut {
         println("Please input the package Id, Weight in Kg, Distance in Km and Offer Code:")
     }
 
-    fun packageCount(count: Int) {
-        println("Package $count:")
+    fun nextPackage() {
+        println("Next Package:")
     }
 
     fun vehicleSpeedAndWeight() {
