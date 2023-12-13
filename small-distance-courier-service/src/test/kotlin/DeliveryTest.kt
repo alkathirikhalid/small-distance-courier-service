@@ -7,6 +7,8 @@ import domain.delivery.Package
 import domain.transportation.Vehicle
 import org.junit.jupiter.api.Test
 import usecase.CostDiscountUseCase
+import usecase.DeliveryTimeUseCase
+import usecase.RemainderPackageDeliveryTimeUseCase
 import kotlin.test.assertEquals
 
 class DeliveryTest {
@@ -23,7 +25,7 @@ class DeliveryTest {
         val distanceToDestination = 50.0
 
         val delivery = Delivery()
-        val item = Package("PKG1", packageTotalWeight, distanceToDestination, "", 0.0, 0.0, 0.0, 0.0)
+        val item = Package("PKG1", packageTotalWeight, distanceToDestination, "", 0.0, 0.0, 0.0, 0.0, 0.0)
         delivery.packages.add(item)
         delivery.baseCost = baseCost
 
@@ -42,10 +44,10 @@ class DeliveryTest {
         val costDiscountUseCase = CostDiscountUseCase()
         val delivery = Delivery()
 
-        val item10 = Package("", 0.0, 0.0, "", 10.0, 50.0, 0.0, 0.0)
-        val item07 = Package("", 0.0, 0.0, "", 7.0, 50.0, 0.0, 0.0)
-        val item05 = Package("", 0.0, 0.0, "", 5.0, 50.0, 0.0, 0.0)
-        val item00 = Package("", 0.0, 0.0, "", 0.0, 50.0, 0.0, 0.0)
+        val item10 = Package("", 0.0, 0.0, "", 10.0, 50.0, 0.0, 0.0, 0.0)
+        val item07 = Package("", 0.0, 0.0, "", 7.0, 50.0, 0.0, 0.0, 0.0)
+        val item05 = Package("", 0.0, 0.0, "", 5.0, 50.0, 0.0, 0.0, 0.0)
+        val item00 = Package("", 0.0, 0.0, "", 0.0, 50.0, 0.0, 0.0, 0.0)
 
         delivery.packages.add(item10)
         delivery.packages.add(item07)
@@ -133,10 +135,10 @@ class DeliveryTest {
         val costDiscountUseCase = CostDiscountUseCase()
         val delivery = Delivery()
 
-        val item10 = Package("", 0.0, 0.0, "", 0.0, 50.0, 5.0, 0.0)
-        val item07 = Package("", 0.0, 0.0, "", 0.0, 50.0, 3.5, 0.0)
-        val item05 = Package("", 0.0, 0.0, "", 0.0, 50.0, 2.5, 0.0)
-        val item00 = Package("", 0.0, 0.0, "", 0.0, 50.0, 0.0, 0.0)
+        val item10 = Package("", 0.0, 0.0, "", 0.0, 50.0, 5.0, 0.0, 0.0)
+        val item07 = Package("", 0.0, 0.0, "", 0.0, 50.0, 3.5, 0.0, 0.0)
+        val item05 = Package("", 0.0, 0.0, "", 0.0, 50.0, 2.5, 0.0, 0.0)
+        val item00 = Package("", 0.0, 0.0, "", 0.0, 50.0, 0.0, 0.0, 0.0)
 
         delivery.packages.add(item10)
         delivery.packages.add(item07)
@@ -218,6 +220,138 @@ class DeliveryTest {
         assertEquals("PKG5", packages[3].id, "Expected PKG is incorrect")
     }
 
+    /**
+     * The following test calculations have dependencies - DeliveryTimeUseCase
+     * 1 - calculateEstimatedDeliveryTime(delivery) // Gets time estimates before loading package to vehicle
+     * 2 - calculatePackageDeliveryPerVehicle(delivery) // Loading packages into vehicle to distinguish between 'to deliver' and 'pending delivery'
+     * 3 - calculateVehicleNextAvailableTime(delivery) // Each vehicle needs to account for the coming back duration
+     * 4 - calculateEstimatedRemainderPackagesDeliveryTime(delivery) // Finally calculate the remainder package delivery time
+     */
+    @Test
+    fun `1 - Calculate Estimated Delivery time Vehicle`() {
+        // Arrange
+        val deliveryTimeUseCase = DeliveryTimeUseCase()
+        val delivery = deliveryWithFivePackagesInput()
+
+        // Act
+        deliveryTimeUseCase.calculateEstimatedDeliveryTime(delivery)
+
+        // Assert
+        assertEquals(
+            0.42,
+            delivery.packages[0].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            1.78,
+            delivery.packages[1].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            1.42,
+            delivery.packages[2].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            0.85,
+            delivery.packages[3].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            1.35,
+            delivery.packages[4].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+    }
+
+    @Test
+    fun `2 - Calculate Package Delivery Per Vehicle`() {
+        // Arrange
+        val deliveryTimeUseCase = DeliveryTimeUseCase()
+        val delivery = deliveryWithFivePackagesInput()
+
+        // Act
+        deliveryTimeUseCase.calculateEstimatedDeliveryTime(delivery)
+        deliveryTimeUseCase.calculatePackageDeliveryPerVehicle(delivery)
+
+        // Assert
+        assertEquals(
+            2,
+            delivery.vehicles[0].packagesToDeliver.size,
+            "Expected PKG to delivery is incorrect"
+        )
+        assertEquals(
+            1,
+            delivery.vehicles[1].packagesToDeliver.size,
+            "Expected PKG to delivery is incorrect"
+        )
+    }
+
+    @Test
+    fun `3 - Calculate Vehicle Next Available Time`() {
+        // Arrange
+        val deliveryTimeUseCase = DeliveryTimeUseCase()
+        val delivery = deliveryWithFivePackagesInput()
+
+        // Act
+        deliveryTimeUseCase.calculateEstimatedDeliveryTime(delivery)
+        deliveryTimeUseCase.calculatePackageDeliveryPerVehicle(delivery)
+        deliveryTimeUseCase.calculateVehicleNextAvailableTime(delivery)
+
+        // Assert
+        assertEquals(
+            3.56,
+            delivery.vehicles[0].availableTime,
+            "Expected time to be available is incorrect"
+        )
+        assertEquals(
+            2.84,
+            delivery.vehicles[1].availableTime,
+            "Expected time to be available is incorrect"
+        )
+    }
+
+    @Test
+    fun `4 - Calculate Estimated Remainder Package Delivery Time`() {
+        // Arrange
+        val deliveryTimeUseCase = DeliveryTimeUseCase()
+        val remainderPackageDeliveryTimeUseCase = RemainderPackageDeliveryTimeUseCase()
+        val delivery = deliveryWithFivePackagesInput()
+
+        // Act
+        deliveryTimeUseCase.calculateEstimatedDeliveryTime(delivery)
+        deliveryTimeUseCase.calculatePackageDeliveryPerVehicle(delivery)
+        deliveryTimeUseCase.calculateVehicleNextAvailableTime(delivery)
+        remainderPackageDeliveryTimeUseCase.calculateEstimatedRemainderPackagesDeliveryTime(delivery)
+
+        // Assert
+        assertEquals(
+            3.98,
+            delivery.packages[0].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            1.78,
+            delivery.packages[1].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            1.42,
+            delivery.packages[2].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            0.85,
+            delivery.packages[3].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            4.1899999999999995,
+            delivery.packages[4].estimatedDeliveryTime,
+            "Expected PKG delivery time is incorrect"
+        )
+    }
+
     private fun deliveryWithSameWeightInput(): Delivery {
         // Provided Test Data
         val delivery = Delivery()
@@ -225,11 +359,11 @@ class DeliveryTest {
 
         val packages: ArrayList<Package> = ArrayList()
 
-        val pkg1 = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0)
-        val pkg2 = Package("PKG2", 50.0, 125.0, "OFR008", 0.0, 0.0, 0.0, 0.0)
-        val pkg3 = Package("PKG3", 50.0, 60.0, "OFR003", 0.0, 0.0, 0.0, 0.0)
-        val pkg4 = Package("PKG4", 50.0, 95.0, "OFR002", 0.0, 0.0, 0.0, 0.0)
-        val pkg5 = Package("PKG5", 50.0, 100.0, "NA", 0.0, 0.0, 0.0, 0.0)
+        val pkg1 = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg2 = Package("PKG2", 50.0, 125.0, "OFR008", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg3 = Package("PKG3", 50.0, 60.0, "OFR003", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg4 = Package("PKG4", 50.0, 95.0, "OFR002", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg5 = Package("PKG5", 50.0, 100.0, "NA", 0.0, 0.0, 0.0, 0.0, 0.0)
 
         packages.add(pkg1)
         packages.add(pkg2)
@@ -254,11 +388,11 @@ class DeliveryTest {
 
         val packages: ArrayList<Package> = ArrayList()
 
-        val pkg1 = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0)
-        val pkg2 = Package("PKG2", 75.0, 125.0, "OFR008", 0.0, 0.0, 0.0, 0.0)
-        val pkg3 = Package("PKG3", 175.0, 60.0, "OFR003", 0.0, 0.0, 0.0, 0.0)
-        val pkg4 = Package("PKG4", 110.0, 95.0, "OFR002", 0.0, 0.0, 0.0, 0.0)
-        val pkg5 = Package("PKG5", 155.0, 100.0, "NA", 0.0, 0.0, 0.0, 0.0)
+        val pkg1 = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg2 = Package("PKG2", 75.0, 125.0, "OFR008", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg3 = Package("PKG3", 175.0, 100.0, "OFR003", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg4 = Package("PKG4", 110.0, 60.0, "OFR002", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val pkg5 = Package("PKG5", 155.0, 95.0, "NA", 0.0, 0.0, 0.0, 0.0, 0.0)
 
         packages.add(pkg1)
         packages.add(pkg2)

@@ -14,6 +14,7 @@ package domain.delivery
  * @property deliveryCost The calculated cost of the package, taking into account the base cost, weight, and distance. (Calculated)
  * @property offer The calculated value of the discount offer applied to the package. (Calculated)
  * @property totalCost The total cost of the package, including the calculated discount. (Calculated)
+ * @property estimatedDeliveryTime The estimated time for delivery of the package. (Calculated)
  */
 data class Package(
     val id: String,
@@ -24,4 +25,5 @@ data class Package(
     var deliveryCost: Double,
     var discount: Double,
     var totalCost: Double,
+    var estimatedDeliveryTime: Double
 )

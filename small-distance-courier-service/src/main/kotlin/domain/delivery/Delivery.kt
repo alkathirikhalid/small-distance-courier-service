@@ -10,6 +10,7 @@ import domain.transportation.Vehicle
  *
  * @property baseCost The base cost of the delivery. Default value is 0.0.
  * @property packages The list of packages included in the delivery. Default is an empty ArrayList.
+ * @property vehicles The list of vehicles available for transportation. Default is an empty ArrayList.
  */
 data class Delivery(
     var baseCost: Double = 0.0,

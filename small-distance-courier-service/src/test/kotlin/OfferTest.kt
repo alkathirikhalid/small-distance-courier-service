@@ -53,8 +53,8 @@ class OfferTest {
         // Arrange
         val packageOperationsUseCase = PackageOperationsUseCase()
 
-        val isValidPackage = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0)
-        val isInValidPackage = Package("PKG1", 200.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0)
+        val isValidPackage = Package("PKG1", 50.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0, 0.0)
+        val isInValidPackage = Package("PKG1", 200.0, 30.0, "OFR001", 0.0, 0.0, 0.0, 0.0, 0.0)
 
         // Act
         val isValid = packageOperationsUseCase.validatePackageOffer(isValidPackage)
@@ -70,7 +70,7 @@ class OfferTest {
         // Arrange
         val packageOperationsUseCase = PackageOperationsUseCase()
         val delivery = Delivery()
-        val item = Package("PKG1", 50.0, 30.0, "", 0.0, 0.0, 0.0, 0.0)
+        val item = Package("PKG1", 50.0, 30.0, "", 0.0, 0.0, 0.0, 0.0, 0.0)
         delivery.packages.add(item)
 
         // Act
