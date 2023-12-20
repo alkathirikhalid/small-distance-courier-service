@@ -20,16 +20,16 @@ class CommandLineIO(private val application: Application, private val commandLin
     fun run() {
         try {
             commandLineOutPut.appLaunch()
-            commandLineOutPut.baseDeliveryAndPackages()
-            getBaseDeliveryCostAndNoOfPackages(readln().trim())
+            getBaseDeliveryCostAndNoOfPackages()
         } catch (exception: Exception) {
             commandLineOutPut.genericError(exception)
             exitProcess(1)  // Exit the application with an error code
         }
     }
 
-    private fun getBaseDeliveryCostAndNoOfPackages(input: String) {
-        var userInput = input
+    private fun getBaseDeliveryCostAndNoOfPackages() {
+        commandLineOutPut.baseDeliveryAndPackages()
+        var userInput = readln().trim()
         var validInput = application.validateBaseDeliveryCostNoOfPackages(userInput)
         while (!validInput) {
             commandLineOutPut.baseDeliveryAndPackagesError()
@@ -38,21 +38,13 @@ class CommandLineIO(private val application: Application, private val commandLin
             userInput = readln().trim()
             validInput = application.validateBaseDeliveryCostNoOfPackages(userInput)
         }
-
         val parts = InputSplitter.splitInput(userInput, 2)
-        val baseDeliveryCost = InputSplitter.getPartAtIndex(parts, 0)
-        val noOfPackages = InputSplitter.getPartAtIndex(parts, 1)
-
-        getPackageIdWeightDistanceAndOfferCode(baseDeliveryCost, noOfPackages)
-    }
-
-    private fun getPackageIdWeightDistanceAndOfferCode(baseDeliver: String, noOfPackages: String) {
-        processPackageInput(baseDeliver, noOfPackages)
-    }
-
-    private fun processPackageInput(baseDeliver: String, noOfPackages: String) {
         val delivery = Delivery()
-        delivery.baseCost = baseDeliver.toDouble()
+        delivery.baseCost = (InputSplitter.getPartAtIndex(parts, 0)).toDouble()
+        getPackageIdWeightDistanceAndOfferCode(delivery, InputSplitter.getPartAtIndex(parts, 1))
+    }
+
+    private fun getPackageIdWeightDistanceAndOfferCode(delivery: Delivery, noOfPackages: String) {
 
         fun getAndAddPackage(packageIdWeightDistanceAndOfferCode: String): Boolean {
             var userInput = packageIdWeightDistanceAndOfferCode
@@ -89,12 +81,12 @@ class CommandLineIO(private val application: Application, private val commandLin
                 exitProcess(1)  // Exit the application with an error code
             }
         }
-        commandLineOutPut.vehicleSpeedAndWeight()
-        getNumberOfVehiclesSpeedAndWeight(readln().trim(), delivery)
+        getNumberOfVehiclesSpeedAndWeight(delivery)
     }
 
-    private fun getNumberOfVehiclesSpeedAndWeight(input: String, delivery: Delivery) {
-        var userInput = input
+    private fun getNumberOfVehiclesSpeedAndWeight(delivery: Delivery) {
+        commandLineOutPut.vehicleSpeedAndWeight()
+        var userInput = readln().trim()
         var validInput = application.validateNoOfVehiclesMaxSpeedMaxWeight(userInput)
         while (!validInput) {
             commandLineOutPut.vehicleSpeedAndWeightError()
@@ -103,16 +95,14 @@ class CommandLineIO(private val application: Application, private val commandLin
             userInput = readln().trim()
             validInput = application.validateNoOfVehiclesMaxSpeedMaxWeight(userInput)
         }
-
-        val parts3 = InputSplitter.splitInput(userInput, 3)
-        for (count in 1..InputSplitter.getPartAtIndex(parts3, 0).toInt()) {
+        val parts = InputSplitter.splitInput(userInput, 3)
+        for (count in 1..InputSplitter.getPartAtIndex(parts, 0).toInt()) {
             val vehicle = Vehicle(
-                InputSplitter.getPartAtIndex(parts3, 1).toDouble(),
-                InputSplitter.getPartAtIndex(parts3, 2).toDouble()
+                InputSplitter.getPartAtIndex(parts, 1).toDouble(),
+                InputSplitter.getPartAtIndex(parts, 2).toDouble()
             )
             delivery.vehicles.add(vehicle)
         }
-
         // Start Calculations
         application.performCalculations(delivery)
         // Print results
