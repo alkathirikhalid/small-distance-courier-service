@@ -185,6 +185,56 @@ class DeliveryTimeTest {
         )
     }
 
+    @Test
+    fun `Stress test and validate all Remainder Package Delivery Time are updated`() {
+        // Arrange
+        val deliveryTimeUseCase = DeliveryTimeUseCase()
+        val remainderPackageDeliveryTimeUseCase = RemainderPackageDeliveryTimeUseCase()
+        val delivery = createStressTestDelivery() // 30 delivery packages with only 2 vehicles
+
+        // Act
+        deliveryTimeUseCase.calculateEstimatedDeliveryTime(delivery)
+        deliveryTimeUseCase.calculatePackageDeliveryPerVehicle(delivery)
+        deliveryTimeUseCase.calculateVehicleNextAvailableTime(delivery)
+        remainderPackageDeliveryTimeUseCase.calculateEstimatedRemainderPackagesDeliveryTime(delivery)
+
+        // Assert 5th - 9th inclusive 20th with the highest 5.34 h delivery time
+        assertEquals(
+            1.78, delivery.packages[6].estimatedDeliveryTime, "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            4.98, delivery.packages[7].estimatedDeliveryTime, "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            4.41, delivery.packages[8].estimatedDeliveryTime, "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            4.91, delivery.packages[9].estimatedDeliveryTime, "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            3.98, delivery.packages[10].estimatedDeliveryTime, "Expected PKG delivery time is incorrect"
+        )
+        assertEquals(
+            5.34, delivery.packages[21].estimatedDeliveryTime, "Expected PKG delivery time is incorrect"
+        )
+    }
+
+    // ---------- Helper Functions ----------
+    private fun createStressTestDelivery(): Delivery {
+        val delivery = deliveryWithFivePackagesInput() // 5
+        delivery.packages.addAll(deliveryWithFivePackagesInput().packages) // 10
+        delivery.packages.addAll(deliveryWithFivePackagesInput().packages) // 15
+        delivery.packages.addAll(deliveryWithFivePackagesInput().packages) // 20
+        delivery.packages.addAll(deliveryWithFivePackagesInput().packages) // 25
+        delivery.packages.addAll(deliveryWithFivePackagesInput().packages) // 30
+
+        // Generate random package ids
+        for (count in 0 until delivery.packages.size) {
+            delivery.packages[count].id = "PKG${count + 1}"
+        }
+        return delivery
+    }
+
     private fun deliveryWithSameWeightInput(): Delivery {
         // Provided Test Data
         val delivery = Delivery()

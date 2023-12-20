@@ -17,7 +17,7 @@ package domain.delivery
  * @property estimatedDeliveryTime The estimated time for delivery of the package. (Calculated)
  */
 data class Package(
-    val id: String,
+    var id: String,
     val weight: Double,
     val distance: Double,
     val offerCode: String,

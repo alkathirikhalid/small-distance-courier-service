@@ -24,25 +24,27 @@ class RemainderPackageDeliveryTimeUseCase {
      * @param delivery The delivery object containing information about packages and vehicles.
      */
     fun calculateEstimatedRemainderPackagesDeliveryTime(delivery: Delivery) {
-
-        // Iterate through all vehicles based on their earliest availability
-        for (vehicle in delivery.vehicles.sortedBy { it.availableTime }) {
-            // Find the optimal package combination for the current vehicle
-            vehicle.packagesToDeliver.clear()
-            vehicle.packagesToDeliver =
-                deliveryCriteria.findOptimalPackageCombination(
-                    vehicle.maxWeight,
-                    UndeliveredPackages.undeliveredPackages
-                )
-            // Update the estimated delivery time for the packages to be delivered by this vehicle
-            for (packageToDeliver in vehicle.packagesToDeliver) {
-                val matchingPackage = delivery.packages.find { it.id == packageToDeliver.id }
-                // Update Estimated Delivery Time
-                matchingPackage?.estimatedDeliveryTime =
-                    matchingPackage?.estimatedDeliveryTime?.plus(vehicle.availableTime) ?: 0.0
+        // Calculate util all undelivered packages delivery time is update
+        while (UndeliveredPackages.undeliveredPackages.size != 0) {
+            // Iterate through all vehicles based on their earliest availability
+            for (vehicle in delivery.vehicles.sortedBy { it.availableTime }) {
+                // Find the optimal package combination for the current vehicle
+                vehicle.packagesToDeliver.clear()
+                vehicle.packagesToDeliver =
+                    deliveryCriteria.findOptimalPackageCombination(
+                        vehicle.maxWeight,
+                        UndeliveredPackages.undeliveredPackages
+                    )
+                // Update the estimated delivery time for the packages to be delivered by this vehicle
+                for (packageToDeliver in vehicle.packagesToDeliver) {
+                    val matchingPackage = delivery.packages.find { it.id == packageToDeliver.id }
+                    // Update Estimated Delivery Time
+                    matchingPackage?.estimatedDeliveryTime =
+                        matchingPackage?.estimatedDeliveryTime?.plus(vehicle.availableTime) ?: 0.0
+                }
+                // Remove the loaded packages from the original list to be used in the next vehicle
+                UndeliveredPackages.undeliveredPackages.removeAll(vehicle.packagesToDeliver.toSet())
             }
-            // Remove the loaded packages from the original list to be used in the next vehicle
-            UndeliveredPackages.undeliveredPackages.removeAll(vehicle.packagesToDeliver.toSet())
         }
     }
 }
