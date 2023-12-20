@@ -1,13 +1,14 @@
 package app
 
 import domain.delivery.Delivery
+import domain.delivery.Package
 import domain.transportation.Vehicle
 import domain.util.InputSplitter
 import kotlin.system.exitProcess
 
 /**
- * The CommandLineIO class handles the command-line interface of the courier service application,
- * facilitating user interactions, input validations, and the initiation of package delivery calculations.
+ * The `CommandLineIO` class manages the command-line interface for the courier service application.
+ * It handles user interactions, input validations, and the initiation of package delivery calculations.
  *
  * @property application An instance of the Application class responsible for coordinating application logic.
  * @property commandLineOutPut An instance of the CommandLineOutPut class for displaying messages to the user.
@@ -27,6 +28,9 @@ class CommandLineIO(private val application: Application, private val commandLin
         }
     }
 
+    /**
+     * Obtains the base delivery cost and the number of packages from the user, initiating the input process.
+     */
     private fun getBaseDeliveryCostAndNoOfPackages() {
         commandLineOutPut.baseDeliveryAndPackages()
         var userInput = readln().trim()
@@ -44,46 +48,46 @@ class CommandLineIO(private val application: Application, private val commandLin
         getPackageIdWeightDistanceAndOfferCode(delivery, InputSplitter.getPartAtIndex(parts, 1))
     }
 
+    /**
+     * Obtains package details (ID, weight, distance, and offer code) for the specified number of packages.
+     */
     private fun getPackageIdWeightDistanceAndOfferCode(delivery: Delivery, noOfPackages: String) {
-
-        fun getAndAddPackage(packageIdWeightDistanceAndOfferCode: String): Boolean {
-            var userInput = packageIdWeightDistanceAndOfferCode
-            var validInput = application.validatePackageIdWeightDistanceOfferCode(userInput)
-            while (!validInput) {
-                commandLineOutPut.packageWeightDistanceAndOfferError()
-                commandLineOutPut.packageWeightDistanceAndOffer()
-                // Keep prompting until valid input is received
-                userInput = readln().trim()
-                validInput = application.validatePackageIdWeightDistanceOfferCode(userInput)
-            }
-
-            val parts = InputSplitter.splitInput(userInput, 4)
-            val item = getPackage(parts)
-            val existingPackage = delivery.packages.find { it.id == item.id }
-            if (existingPackage != null) {
+        for (count in 1..noOfPackages.toInt()) {
+            commandLineOutPut.packageCount(count)
+            var item = processPackages()
+            while (delivery.packages.find { it.id == item.id } != null) {
                 commandLineOutPut.packageExistsError()
-                return true
+                item = processPackages()
             }
             delivery.packages.add(item)
-            return true
-        }
-
-        // Process the first package
-        commandLineOutPut.packageWeightDistanceAndOffer()
-        if (!getAndAddPackage(readln().trim())) {
-            exitProcess(1)  // Exit the application with an error code
-        }
-
-        // Process the remaining packages
-        for (count in 2..noOfPackages.toInt()) {
-            commandLineOutPut.nextPackage()
-            if (!getAndAddPackage(readln().trim())) {
-                exitProcess(1)  // Exit the application with an error code
-            }
         }
         getNumberOfVehiclesSpeedAndWeight(delivery)
     }
 
+    /**
+     * Obtains package details from the user input, handling input validation.
+     *
+     * @return The created Package object based on user input.
+     */
+    private fun processPackages(): Package {
+        commandLineOutPut.packageWeightDistanceAndOffer()
+        var userInput = readln().trim()
+        var validInput = application.validatePackageIdWeightDistanceOfferCode(userInput)
+        while (!validInput) {
+            commandLineOutPut.packageWeightDistanceAndOfferError()
+            commandLineOutPut.packageWeightDistanceAndOffer()
+            // Keep prompting until valid input is received
+            userInput = readln().trim()
+            validInput = application.validatePackageIdWeightDistanceOfferCode(userInput)
+        }
+        val parts = InputSplitter.splitInput(userInput, 4)
+        return getPackage(parts)
+    }
+
+    /**
+     * Obtains the number of vehicles, their maximum speed, and maximum weight from the user.
+     * Initiates calculations and prints the results.
+     */
     private fun getNumberOfVehiclesSpeedAndWeight(delivery: Delivery) {
         commandLineOutPut.vehicleSpeedAndWeight()
         var userInput = readln().trim()
@@ -109,8 +113,14 @@ class CommandLineIO(private val application: Application, private val commandLin
         commandLineOutPut.printResults(delivery)
     }
 
-    private fun getPackage(parts: List<String>): domain.delivery.Package {
-        return domain.delivery.Package(
+    /**
+     * Creates a Package object based on the specified parts.
+     *
+     * @param parts A list containing package details (ID, weight, distance, and offer code).
+     * @return The created Package object.
+     */
+    private fun getPackage(parts: List<String>): Package {
+        return Package(
             InputSplitter.getPartAtIndex(parts, 0),
             InputSplitter.getPartAtIndex(parts, 1).toDouble(),
             InputSplitter.getPartAtIndex(parts, 2).toDouble(),

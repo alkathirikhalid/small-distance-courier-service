@@ -39,8 +39,8 @@ class CommandLineOutPut {
         println("Please input the package Id, Weight in Kg, Distance in Km and Offer Code:")
     }
 
-    fun nextPackage() {
-        println("Next Package:")
+    fun packageCount(count: Int) {
+        println("Package $count.")
     }
 
     fun vehicleSpeedAndWeight() {
