@@ -20,7 +20,7 @@ class ApplicationTest {
             appendLine("PKG3 175 100 OFR003")  // Package 3 details
             appendLine("PKG4 110 60 OFR002")  // Package 4 details
             appendLine("PKG5 155 95 NA")  // Package 5 details
-            appendLine("2 70 200")  // Package 5 details
+            appendLine("2 70 200")  // Vehicles, Max Speed and Max Weight
         }
 
         // Set System.in to use the simulated input

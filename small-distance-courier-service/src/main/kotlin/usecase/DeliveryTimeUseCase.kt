@@ -4,18 +4,21 @@ import data.UndeliveredPackages
 import domain.delivery.Delivery
 import domain.delivery.DeliveryCriteria
 import domain.delivery.DeliveryTime
+import domain.delivery.VehicleNextAvailableTime
 
 /**
- * The `DeliveryTimeUseCase` class provides use case-specific functionality related to the calculation of delivery times and package distribution.
+ * The `DeliveryTimeUseCase` class provides use case-specific functionality related to the calculation of delivery times
+ * and package distribution.
  *
  * This class contains methods to estimate the delivery time for individual packages, optimize package distribution among vehicles,
  * and calculate the next available time for each delivery vehicle based on the estimated delivery times.
  *
- * @property calculateEstimatedDeliveryTime Calculates the estimated delivery time for each package in the given delivery.
- * @property calculatePackageDeliveryPerVehicle Optimizes package distribution among delivery vehicles based on weight constraints.
- * @property calculateVehicleNextAvailableTime Calculates the next available time for each delivery vehicle based on the estimated delivery times.
  */
 class DeliveryTimeUseCase {
+    private val deliveryTime = DeliveryTime()
+    private val deliveryCriteria = DeliveryCriteria()
+    private val vehicleNextAvailableTime = VehicleNextAvailableTime()
+
     /**
      * Calculates the estimated delivery time for each package in the given delivery.
      *
@@ -24,7 +27,6 @@ class DeliveryTimeUseCase {
      */
     fun calculateEstimatedDeliveryTime(delivery: Delivery): Delivery {
         for (item in delivery.packages) {
-            val deliveryTime = DeliveryTime()
             item.estimatedDeliveryTime = deliveryTime.estimateDeliveryTime(
                 item.distance,
                 delivery.vehicles[0].maxSpeed
@@ -40,7 +42,6 @@ class DeliveryTimeUseCase {
      * @return The updated delivery object with optimized package distribution among vehicles.
      */
     fun calculatePackageDeliveryPerVehicle(delivery: Delivery): Delivery {
-        val deliveryCriteria = DeliveryCriteria()
         val currentUndeliveredPackages = delivery.packages.toMutableList()
 
         for (vehicle in delivery.vehicles) {
@@ -67,8 +68,7 @@ class DeliveryTimeUseCase {
             val maxDeliveryTime =
                 vehicle.packagesToDeliver.maxByOrNull { it.estimatedDeliveryTime }?.estimatedDeliveryTime
                     ?: 0.0
-            // Multiply by 2 to account for the return trip
-            vehicle.availableTime = maxDeliveryTime * 2
+            vehicle.availableTime = vehicleNextAvailableTime.estimatedReturnTime(maxDeliveryTime)
         }
         return delivery
     }

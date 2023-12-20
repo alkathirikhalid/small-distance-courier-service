@@ -12,16 +12,19 @@ import domain.delivery.DeliveryCriteria
  * finds the optimal package combination for each vehicle, and updates the estimated delivery time for the packages
  * to be delivered by that vehicle. The undelivered packages are then updated accordingly.
  *
- * @property calculateEstimatedRemainderPackagesDeliveryTime Calculates the estimated delivery time for remaining undelivered packages.
+ * @property calculateEstimatedRemainderPackagesDeliveryTime
+ *   Calculates the estimated delivery time for remaining undelivered packages based on the earliest available vehicles.
  */
 class RemainderPackageDeliveryTimeUseCase {
+    private val deliveryCriteria = DeliveryCriteria()
+
     /**
      * Calculates the estimated delivery time for the remaining undelivered packages.
      *
      * @param delivery The delivery object containing information about packages and vehicles.
      */
     fun calculateEstimatedRemainderPackagesDeliveryTime(delivery: Delivery) {
-        val deliveryCriteria = DeliveryCriteria()
+
         // Iterate through all vehicles based on their earliest availability
         for (vehicle in delivery.vehicles.sortedBy { it.availableTime }) {
             // Find the optimal package combination for the current vehicle

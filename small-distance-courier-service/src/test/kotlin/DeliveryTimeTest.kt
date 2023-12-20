@@ -1,6 +1,4 @@
-import domain.delivery.Delivery
-import domain.delivery.DeliveryCriteria
-import domain.delivery.Package
+import domain.delivery.*
 import domain.transportation.Vehicle
 import org.junit.jupiter.api.Test
 import usecase.DeliveryTimeUseCase
@@ -57,6 +55,18 @@ class DeliveryTimeTest {
         assertEquals("PKG5", packages[3].id, "Expected PKG is incorrect")
     }
 
+    @Test
+    fun `Delivery time = Distance to cover divided by vehicle max speed`() {
+        // Arrange
+        val deliveryTime = DeliveryTime()
+
+        // Act
+        val deliveryTimeResult = deliveryTime.estimateDeliveryTime(30.0, 70.0)
+
+        // Assert
+        assertEquals(0.42, deliveryTimeResult, "Expected PKG delivery time is incorrect")
+    }
+
     /**
      * The following test calculations have dependencies - DeliveryTimeUseCase
      * 1 - calculateEstimatedDeliveryTime(delivery) // Gets time estimates before loading package to vehicle
@@ -107,6 +117,20 @@ class DeliveryTimeTest {
         )
         assertEquals(
             1, delivery.vehicles[1].packagesToDeliver.size, "Expected PKG to delivery is incorrect"
+        )
+    }
+
+    @Test
+    fun `Vehicle Next Available Time`() {
+        // Arrange
+        val vehicleNextAvailableTime = VehicleNextAvailableTime()
+
+        // Act
+        val estimatedReturnTime = vehicleNextAvailableTime.estimatedReturnTime(1.78)
+
+        // Assert
+        assertEquals(
+            3.56, estimatedReturnTime, "Expected time to be available is incorrect"
         )
     }
 
